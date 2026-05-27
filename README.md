@@ -104,17 +104,6 @@ lumen/
 
 ---
 
-## 🛣️ Roadmap
-
-- [ ] Conversation history — persist chat across sessions per URL
-- [ ] Citation mode — highlight the exact sentence the answer came from
-- [ ] PDF support
-- [ ] Export chat as Markdown
-- [ ] Firefox support
-- [ ] Chrome Web Store listing
-
----
-
 ## 🛠 Built with
 
 - Chrome Extension Manifest V3
