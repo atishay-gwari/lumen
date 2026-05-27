@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lumen</title>
+  <link rel="stylesheet" href="sidebar.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- Header -->
+  <div id="header">
+    <div id="logo">💡 Lumen</div>
+
+    <!-- Model picker button + floating panel -->
+    <button id="popout-btn" title="Pop out into a bigger window">⤢</button>
+
+    <div id="model-picker">
+      <button id="model-btn" title="Switch AI model">
+        <span id="model-btn-name">Loading…</span>
+        <span id="model-btn-arrow">▾</span>
+      </button>
+      <div id="model-panel">
+        <div id="model-panel-search-wrap">
+          <input type="search" id="model-panel-search" placeholder="Search models…" autocomplete="off">
+        </div>
+        <div id="model-panel-list"></div>
+      </div>
+    </div>
+
+    <button id="settings-btn" title="Settings">⚙</button>
+  </div>
+
+  <!-- Info banner (rate limit warnings, errors, etc.) -->
+  <div id="banner"></div>
+
+  <!-- Article context bar -->
+  <div id="article-bar">
+    <span id="article-icon">📄</span>
+    <span id="article-title">Loading page…</span>
+    <span id="word-count"></span>
+    <button id="refresh-btn" title="Re-read this page">↻</button>
+  </div>
+
+  <!-- Mode selector -->
+  <div id="mode-bar">
+    <button class="mode-btn active" data-mode="quick"  title="Short, direct answers from the article">⚡ Quick</button>
+    <button class="mode-btn"        data-mode="tutor"  title="Explains like a teacher, uses examples and analogies">🎓 Tutor</button>
+    <button class="mode-btn"        data-mode="deep"   title="Thorough answers — nuance, context, implications">🔍 Deep</button>
+    <button class="mode-btn"        data-mode="devil"  title="Challenges the article — surfaces weak claims and bias">🎭 Debate</button>
+    <button class="mode-btn"        data-mode="simple" title="Explains in plain language, no jargon">👶 Simple</button>
+  </div>
+
+  <!-- Mode description strip -->
+  <div id="mode-desc"></div>
+
+  <!-- Chat messages -->
+  <div id="messages">
+    <div id="welcome">
+      <div class="welcome-icon">💬</div>
+      <div class="welcome-title">Ask anything about this page</div>
+      <div class="welcome-sub">Lumen reads the current article<br>and answers your questions using AI.</div>
+      <div class="suggestion-chips" id="chips"></div>
+    </div>
+  </div>
+
+  <!-- Input -->
+  <div id="input-area">
+    <textarea
+      id="user-input"
+      rows="1"
+      placeholder="Ask anything about this page…"
+      maxlength="2000"
+    ></textarea>
+    <button id="send-btn" title="Send (Enter)">↑</button>
+  </div>
+
+  <!-- Status bar -->
+  <div id="status-bar">
+    <div id="usage-bar-wrap">
+      <div id="usage-bar"><div id="usage-bar-fill" style="width:0%"></div></div>
+      <span id="usage-text">0 requests today</span>
+    </div>
+    <button id="clear-btn" title="Clear conversation">Clear chat</button>
+  </div>
+
+</div>
+<script src="sidebar.js"></script>
+</body>
+</html>

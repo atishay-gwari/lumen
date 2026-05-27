@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lumen — Settings</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      background: #f8f9fa; color: #111827;
+      min-height: 100vh; padding: 32px 24px;
+      display: flex; justify-content: center;
+    }
+    .wrap { width: 100%; max-width: 520px; }
+    .page-header { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+    .page-header .logo { font-size: 20px; font-weight: 800; color: #6366f1; }
+    .page-header .sub  { font-size: 13px; color: #6b7280; }
+
+    .section { background: white; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.07); margin-bottom: 16px; overflow: hidden; }
+    .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #9ca3af; padding: 14px 18px 10px; border-bottom: 1px solid #f1f3f5; }
+
+    .field { padding: 14px 18px; border-bottom: 1px solid #f1f3f5; }
+    .field:last-child { border-bottom: none; }
+    .field-label { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+    .field-desc  { font-size: 12px; color: #6b7280; margin-bottom: 10px; line-height: 1.4; }
+
+    input[type="password"], input[type="text"], input[type="search"], select {
+      width: 100%; padding: 9px 12px;
+      border: 1.5px solid #e5e7eb; border-radius: 8px;
+      font-size: 13px; font-family: inherit;
+      outline: none; transition: border-color 0.15s;
+      background: #f9fafb; color: #111827;
+    }
+    input:focus, select:focus { border-color: #6366f1; background: white; }
+
+    .input-row { display: flex; gap: 8px; }
+    .input-row input { flex: 1; }
+
+    .btn-sm {
+      padding: 9px 14px; border-radius: 8px; border: none;
+      font-size: 12.5px; font-weight: 600; cursor: pointer;
+      transition: background 0.15s; white-space: nowrap;
+    }
+    .btn-primary   { background: #6366f1; color: white; }
+    .btn-primary:hover { background: #4f46e5; }
+    .btn-danger    { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+    .btn-danger:hover  { background: #fee2e2; }
+    .btn-secondary { background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb; }
+    .btn-secondary:hover { background: #e5e7eb; }
+    .btn-sm:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .status-row { display: flex; align-items: center; gap: 7px; margin-top: 8px; font-size: 12px; min-height: 20px; flex-wrap: wrap; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: #d1d5db; flex-shrink: 0; }
+    .dot.ok      { background: #22c55e; }
+    .dot.fail    { background: #ef4444; }
+    .dot.loading { background: #f59e0b; animation: pulse 0.8s ease-in-out infinite; }
+    @keyframes pulse { 50% { opacity: 0.4; } }
+
+    /* ── Model picker ─────────────────────────────────────────────────────── */
+    .model-controls {
+      display: flex; gap: 8px; align-items: center; margin-bottom: 8px;
+    }
+    .model-controls input[type="search"] {
+      flex: 1; padding: 7px 10px; font-size: 12px;
+    }
+    .free-toggle {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 12px; color: #374151; white-space: nowrap; cursor: pointer;
+      user-select: none;
+    }
+    .free-toggle input[type="checkbox"] {
+      width: auto; accent-color: #6366f1; cursor: pointer;
+    }
+    #model-select {
+      width: 100%;
+      /* Show ~8 options at once so the user can scan without opening a popup */
+      size: 8;
+      border-radius: 8px;
+      font-size: 12.5px;
+      padding: 4px 0;
+      height: auto;
+    }
+    #model-select option { padding: 6px 10px; }
+    #model-select option:checked { background: #ede9fe; color: #3730a3; }
+    .model-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 8px; font-size: 11.5px; color: #9ca3af;
+    }
+
+    /* ── Usage ────────────────────────────────────────────────────────────── */
+    .usage-display { display: flex; align-items: center; gap: 10px; }
+    .usage-bar { flex: 1; height: 6px; background: #e5e7eb; border-radius: 3px; overflow: hidden; }
+    .usage-bar-fill { height: 100%; background: #6366f1; border-radius: 3px; transition: width 0.3s; }
+    .usage-label { font-size: 12px; color: #6b7280; white-space: nowrap; }
+
+    .link { color: #6366f1; text-decoration: none; font-size: 12px; }
+    .link:hover { text-decoration: underline; }
+
+    /* ── Toast ────────────────────────────────────────────────────────────── */
+    #save-toast {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      background: #111827; color: white; padding: 10px 20px;
+      border-radius: 8px; font-size: 13px; font-weight: 500;
+      display: none; z-index: 100; animation: fadeIn 0.2s;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateX(-50%) translateY(10px); } }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="page-header">
+    <div>
+      <div class="logo">💡 Lumen</div>
+      <div class="sub">Settings</div>
+    </div>
+  </div>
+
+  <!-- API Key -->
+  <div class="section">
+    <div class="section-title">API Connection</div>
+    <div class="field">
+      <div class="field-label">OpenRouter API Key</div>
+      <div class="field-desc">Your key is stored locally in Chrome's encrypted storage. It never leaves your device.</div>
+      <div class="input-row">
+        <input type="password" id="key-input" placeholder="sk-or-v1-…" spellcheck="false" autocomplete="off">
+        <button class="btn-sm btn-primary" id="btn-validate">Validate</button>
+      </div>
+      <div class="status-row">
+        <div class="dot" id="key-dot"></div>
+        <span id="key-status">Loading…</span>
+      </div>
+    </div>
+    <div class="field" style="display:flex; justify-content:space-between; align-items:center;">
+      <span style="font-size:12px; color:#6b7280;">Manage your OpenRouter keys</span>
+      <a href="https://openrouter.ai/settings/keys" target="_blank" class="link">openrouter.ai/settings/keys ↗</a>
+    </div>
+  </div>
+
+  <!-- Model picker — populated live from OpenRouter API -->
+  <div class="section">
+    <div class="section-title">Model</div>
+    <div class="field">
+      <div class="field-label">Choose a model</div>
+      <div class="field-desc">
+        Fetched live from OpenRouter. Select any model to use it as your default.<br>
+        <strong>Free models</strong> are rate-limited and shared — they can get overloaded.
+        If you have OpenRouter credits, pick a <strong>non-free model</strong> for reliable responses at a fraction of a cent each.
+        <a href="https://openrouter.ai/models" target="_blank" class="link">Browse on OpenRouter ↗</a>
+      </div>
+
+      <!-- Search + free-only filter -->
+      <div class="model-controls">
+        <input type="search" id="model-search" placeholder="Search models…">
+        <label class="free-toggle">
+          <input type="checkbox" id="free-only">
+          Free only
+        </label>
+        <button class="btn-sm btn-secondary" id="btn-refresh-models" title="Re-fetch model list from OpenRouter">↻</button>
+      </div>
+
+      <!-- Scrollable list — selecting a row saves immediately -->
+      <select id="model-select" size="8"></select>
+
+      <!-- Count + last-updated -->
+      <div class="model-footer">
+        <span id="model-count">Loading…</span>
+        <span id="model-updated"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom API Endpoint -->
+  <div class="section">
+    <div class="section-title">API Endpoint</div>
+    <div class="field">
+      <div class="field-label">Router URL</div>
+      <div class="field-desc">
+        The <strong>base</strong> URL for API calls — do <em>not</em> include
+        <code>/chat/completions</code>, that is added automatically.
+        Leave as default for OpenRouter. Change only if you're routing through
+        your own OpenAI-compatible proxy.
+        <a href="https://openrouter.ai/docs" target="_blank" class="link">OpenRouter docs ↗</a>
+      </div>
+      <div class="input-row">
+        <input type="text" id="custom-url-input" placeholder="https://openrouter.ai/api/v1" spellcheck="false" autocomplete="off">
+        <button class="btn-sm btn-primary" id="btn-custom-url-save">Save</button>
+      </div>
+      <div class="status-row">
+        <div class="dot" id="custom-url-dot"></div>
+        <span id="custom-url-status">Using default OpenRouter endpoint</span>
+        <button class="btn-sm btn-secondary" id="btn-custom-url-reset" style="margin-left:auto;">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Usage -->
+  <div class="section">
+    <div class="section-title">Today's Usage</div>
+    <div class="field">
+      <div class="field-label">Requests today</div>
+      <div class="field-desc">Tracked locally for reference. OpenRouter enforces its own free-tier limits (resets at midnight UTC).</div>
+      <div class="usage-display">
+        <div class="usage-bar"><div class="usage-bar-fill" id="usage-fill" style="width:0%"></div></div>
+        <div class="usage-label" id="usage-label">Loading…</div>
+      </div>
+      <div style="margin-top:12px;">
+        <button class="btn-sm btn-secondary" id="btn-reset-usage">Reset counter</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data & Privacy -->
+  <div class="section">
+    <div class="section-title">Data &amp; Privacy</div>
+    <div class="field" style="display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <div class="field-label">Remove API key</div>
+        <div style="font-size:12px;color:#6b7280;margin-top:2px;">Clears your key and resets the extension</div>
+      </div>
+      <button class="btn-sm btn-danger" id="btn-remove-key">Remove key</button>
+    </div>
+    <div class="field" style="font-size:12px; color:#6b7280; line-height:1.6;">
+      Lumen has no servers. Your article text and conversations are processed directly
+      between your browser and OpenRouter. Nothing is stored by us.
+    </div>
+  </div>
+
+</div>
+
+<div id="save-toast">✓ Saved</div>
+<script src="settings.js"></script>
+</body>
+</html>

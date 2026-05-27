@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lumen — Setup</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      background: #f8f9fa;
+      color: #111827;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.10);
+      width: 100%;
+      max-width: 480px;
+      overflow: hidden;
+    }
+    .card-header {
+      background: #6366f1;
+      padding: 28px 32px 24px;
+      color: white;
+    }
+    .logo { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+    .tagline { font-size: 13px; opacity: 0.85; line-height: 1.4; }
+    .card-body { padding: 28px 32px; }
+
+    /* Steps */
+    .steps { display: flex; gap: 0; margin-bottom: 28px; }
+    .step-indicator {
+      display: flex; flex-direction: column; align-items: center; flex: 1;
+    }
+    .step-dot {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700;
+      background: #e5e7eb; color: #9ca3af;
+      transition: all 0.25s;
+    }
+    .step-dot.done    { background: #22c55e; color: white; }
+    .step-dot.active  { background: #6366f1; color: white; }
+    .step-label { font-size: 10px; color: #9ca3af; margin-top: 4px; text-align: center; }
+    .step-label.active { color: #6366f1; font-weight: 600; }
+    .step-line {
+      flex: 1; height: 2px; background: #e5e7eb; margin-top: 13px; transition: background 0.25s;
+    }
+    .step-line.done { background: #22c55e; }
+
+    /* Panels */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    h2 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    p  { font-size: 13px; color: #6b7280; line-height: 1.6; margin-bottom: 16px; }
+    p strong { color: #111827; }
+
+    .privacy-note {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #166534;
+      margin-bottom: 20px;
+      display: flex; gap: 8px; align-items: flex-start;
+    }
+
+    /* Steps guide */
+    .guide-step {
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 10px 0; border-bottom: 1px solid #f1f3f5;
+    }
+    .guide-step:last-child { border-bottom: none; }
+    .guide-num {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: #ede9fe; color: #6366f1;
+      font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .guide-text { font-size: 12.5px; color: #374151; line-height: 1.5; }
+    .guide-text a { color: #6366f1; text-decoration: none; font-weight: 600; }
+    .guide-text a:hover { text-decoration: underline; }
+    .guide-text code {
+      background: #f3f4f6; border: 1px solid #e5e7eb;
+      border-radius: 4px; padding: 1px 5px;
+      font-size: 11.5px; font-family: monospace;
+    }
+
+    /* Input */
+    .input-label { font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 6px; }
+    .input-wrap { display: flex; gap: 8px; }
+    input[type="text"], input[type="password"] {
+      flex: 1; padding: 10px 12px;
+      border: 1.5px solid #e5e7eb; border-radius: 8px;
+      font-size: 13px; font-family: inherit;
+      outline: none; transition: border-color 0.15s;
+    }
+    input:focus { border-color: #6366f1; }
+
+    .status-row {
+      display: flex; align-items: center; gap: 8px;
+      margin-top: 10px; font-size: 12px;
+      min-height: 22px;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #d1d5db; flex-shrink: 0; }
+    .dot.ok    { background: #22c55e; }
+    .dot.fail  { background: #ef4444; }
+    .dot.loading { background: #f59e0b; animation: pulse 0.8s ease-in-out infinite; }
+    @keyframes pulse { 50% { opacity: 0.4; } }
+    #validate-msg { color: #6b7280; }
+    #validate-msg.ok   { color: #166534; }
+    #validate-msg.fail { color: #991b1b; }
+
+    /* Buttons */
+    .btn {
+      width: 100%; padding: 11px;
+      background: #6366f1; color: white;
+      border: none; border-radius: 8px;
+      font-size: 14px; font-weight: 600;
+      cursor: pointer; margin-top: 20px;
+      transition: background 0.15s, opacity 0.15s;
+    }
+    .btn:hover:not(:disabled) { background: #4f46e5; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-secondary {
+      background: white; color: #6366f1;
+      border: 1.5px solid #6366f1;
+    }
+    .btn-secondary:hover:not(:disabled) { background: #ede9fe; }
+
+    /* Success */
+    .success-icon { font-size: 48px; text-align: center; margin: 8px 0 16px; }
+    .success-title { font-size: 20px; font-weight: 800; text-align: center; margin-bottom: 8px; }
+    .success-sub { font-size: 13px; color: #6b7280; text-align: center; line-height: 1.5; margin-bottom: 24px; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="card-header">
+    <div class="logo">💡 Lumen</div>
+    <div class="tagline">Chat with any article using AI — your reading stays completely private.</div>
+  </div>
+  <div class="card-body">
+
+    <!-- Step indicators -->
+    <div class="steps" id="step-indicators">
+      <div class="step-indicator">
+        <div class="step-dot active" id="dot-1">1</div>
+        <div class="step-label active" id="lbl-1">Connect</div>
+      </div>
+      <div class="step-line" id="line-1"></div>
+      <div class="step-indicator">
+        <div class="step-dot" id="dot-2">2</div>
+        <div class="step-label" id="lbl-2">API Key</div>
+      </div>
+      <div class="step-line" id="line-2"></div>
+      <div class="step-indicator">
+        <div class="step-dot" id="dot-3">3</div>
+        <div class="step-label" id="lbl-3">Ready!</div>
+      </div>
+    </div>
+
+    <!-- Panel 1: Intro / get account -->
+    <div class="panel active" id="panel-1">
+      <h2>Connect your free AI account</h2>
+      <p>Lumen uses <strong>OpenRouter</strong> — a free gateway to powerful AI models. You'll create your own account so <strong>your article text never passes through our servers</strong>.</p>
+
+      <div class="privacy-note">
+        🔒 <span>Your API key is stored only on <strong>this device</strong>. We have no servers, no accounts, and no access to what you read.</span>
+      </div>
+
+      <div class="guide-step">
+        <div class="guide-num">1</div>
+        <div class="guide-text">Go to <a href="https://openrouter.ai" target="_blank">openrouter.ai</a> and create a free account (takes ~2 minutes, just email + password).</div>
+      </div>
+      <div class="guide-step">
+        <div class="guide-num">2</div>
+        <div class="guide-text">After signing in, click your profile icon → <strong>Keys</strong> → <strong>Create Key</strong>. Give it any name (e.g. <code>article-chat</code>).</div>
+      </div>
+      <div class="guide-step">
+        <div class="guide-num">3</div>
+        <div class="guide-text">Copy the key — it starts with <code>sk-or-v1-</code>. Then click Next below to paste it in.</div>
+      </div>
+
+      <button class="btn" id="btn-to-step2">I have my API key → Next</button>
+      <button class="btn btn-secondary" id="btn-openrouter" style="margin-top:8px">Open openrouter.ai ↗</button>
+    </div>
+
+    <!-- Panel 2: Paste key -->
+    <div class="panel" id="panel-2">
+      <h2>Paste your API key</h2>
+      <p>Your key is stored locally using Chrome's encrypted storage — it syncs to your other browsers but is never sent to us.</p>
+
+      <div class="input-label">OpenRouter API Key</div>
+      <div class="input-wrap">
+        <input type="password" id="key-input" placeholder="sk-or-v1-…" autocomplete="off" spellcheck="false">
+      </div>
+      <div class="status-row">
+        <div class="dot" id="validate-dot"></div>
+        <span id="validate-msg">Paste your key above to validate it</span>
+      </div>
+
+      <button class="btn" id="btn-save" disabled>Save &amp; Continue →</button>
+    </div>
+
+    <!-- Panel 3: Done -->
+    <div class="panel" id="panel-3">
+      <div class="success-icon">🎉</div>
+      <div class="success-title">You're all set!</div>
+      <div class="success-sub">Lumen is ready. Click the 💡 icon in your toolbar on any article to start chatting.</div>
+      <button class="btn" id="btn-try">Try it now — open an article ↗</button>
+      <button class="btn btn-secondary" id="btn-close" style="margin-top:8px">Close this tab</button>
+    </div>
+
+  </div>
+</div>
+
+<script src="onboarding.js"></script>
+</body>
+</html>

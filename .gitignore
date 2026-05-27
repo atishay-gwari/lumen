@@ -1,0 +1,43 @@
+# ── Claude Code AI assistant files ───────────────────────────────────────────
+# These are local dev-assistant files and should never be published.
+# They contain absolute paths, session data, and tool permissions.
+.claude/
+CLAUDE.md
+STARTER_PROMPT.md
+
+# ── Packaged extension files ──────────────────────────────────────────────────
+# Built/signed artefacts — regenerated from source, never committed.
+*.zip
+*.crx
+*.pem
+
+# ── OS junk ───────────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ── Editor / IDE ──────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+nbproject/
+
+# ── Node (if ever added) ──────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ── Environment / secrets ─────────────────────────────────────────────────────
+.env
+.env.*
+*.secret
+secrets.json
